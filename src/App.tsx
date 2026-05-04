@@ -292,10 +292,10 @@ export default function App() {
                       key={log.id}
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white/5 rounded-xl border border-white/5 overflow-hidden"
+                      className="bg-white/5 rounded-xl border border-white/5 overflow-hidden w-full"
                     >
                       <div className="bg-white/5 px-3 py-1.5 flex justify-between items-center border-b border-white/5">
-                        <span className="text-[10px] font-black text-indigo-400 uppercase truncate max-w-[120px]">{log.title}</span>
+                        <span className="text-[10px] font-black text-indigo-400 uppercase truncate max-w-[150px]">{log.title}</span>
                         <span className="text-[9px] font-mono text-zinc-600">{new Date(log.timestamp).toLocaleTimeString('tr-TR')}</span>
                       </div>
                       <div className="p-3 space-y-3">
@@ -304,9 +304,9 @@ export default function App() {
                           <div className="text-[8px] font-black text-pink-500 uppercase tracking-widest mb-1">KAZANANLAR</div>
                           <div className="space-y-1">
                             {log.winners.map((name, idx) => (
-                              <div key={idx} className="flex items-center gap-2">
-                                <span className="text-[10px] font-bold text-pink-500/50">#{idx+1}</span>
-                                <span className="text-xs font-bold uppercase truncate">{name}</span>
+                              <div key={idx} className="flex items-center gap-2 overflow-hidden">
+                                <span className="text-[10px] font-bold text-pink-500/50 shrink-0">#{idx+1}</span>
+                                <span className="text-xs font-bold uppercase truncate w-full">{name}</span>
                               </div>
                             ))}
                           </div>
@@ -317,9 +317,9 @@ export default function App() {
                             <div className="text-[8px] font-black text-indigo-400 uppercase tracking-widest mb-1">YEDEKLER</div>
                             <div className="space-y-1">
                               {log.substitutes.map((name, idx) => (
-                                <div key={idx} className="flex items-center gap-2">
-                                  <span className="text-[10px] font-bold text-indigo-500/50">Y{idx+1}</span>
-                                  <span className="text-xs font-bold uppercase text-zinc-400 truncate">{name}</span>
+                                <div key={idx} className="flex items-center gap-2 overflow-hidden">
+                                  <span className="text-[10px] font-bold text-indigo-500/50 shrink-0">Y{idx+1}</span>
+                                  <span className="text-xs font-bold uppercase text-zinc-400 truncate w-full">{name}</span>
                                 </div>
                               ))}
                             </div>
