@@ -152,10 +152,10 @@ export default function App() {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 min-h-0 items-stretch">
+        <div className="flex flex-col lg:flex-row gap-8 items-stretch">
           
           {/* Sidebar: Input & Settings */}
-          <div className="w-full lg:w-80 flex flex-col gap-4 shrink-0">
+          <div className="w-full lg:w-72 flex flex-col gap-4 shrink-0">
             {/* Input Card */}
             <div className="glass-panel p-5 rounded-2xl flex flex-col gap-3 min-h-[300px]">
               <div className="flex items-center justify-between">
