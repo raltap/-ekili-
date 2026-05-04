@@ -86,7 +86,7 @@ export default function App() {
       
       if (settings.confettiEnabled) {
         confetti({
-          particleCount: 150,
+          particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
           colors: ['#ffffff', '#facc15', '#3b82f6']
@@ -144,7 +144,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 min-h-0">
+        <div className="flex flex-col lg:flex-row gap-6 min-h-0 items-stretch">
           
           {/* Sidebar: Input & Settings */}
           <div className="w-full lg:w-80 flex flex-col gap-4 shrink-0">
@@ -270,16 +270,16 @@ export default function App() {
           </div>
 
           {/* Winner Log Sidebar */}
-          <div className="w-full lg:w-80 flex flex-col gap-4">
-            <div className="bg-black/20 p-5 rounded-[2rem] border border-white/5 flex flex-col gap-4 h-full min-h-[500px]">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-black uppercase tracking-widest text-pink-400">ÇEKİLİŞ LOGU</h3>
+          <div className="w-full lg:w-80 flex flex-col gap-4 shrink-0 overflow-hidden">
+            <div className="bg-black/20 p-5 rounded-[2rem] border border-white/5 flex flex-col gap-4 h-full min-h-[500px] w-full">
+              <div className="flex items-center justify-between shrink-0">
+                <div className="min-w-0">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-pink-400 truncate">ÇEKİLİŞ LOGU</h3>
                   <div className="h-px w-24 bg-gradient-to-r from-pink-500/50 to-transparent"></div>
                 </div>
                 <button 
                   onClick={clearHistory}
-                  className="text-[9px] font-bold text-zinc-600 hover:text-red-400 transition-colors uppercase"
+                  className="text-[9px] font-bold text-zinc-600 hover:text-red-400 transition-colors uppercase whitespace-nowrap shrink-0 ml-2"
                 >
                   LOGU TEMİZLE
                 </button>
@@ -290,13 +290,13 @@ export default function App() {
                   {history.map((log) => (
                     <motion.div 
                       key={log.id}
-                      initial={{ opacity: 0, y: -20 }}
+                      initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white/5 rounded-xl border border-white/5 overflow-hidden w-full"
+                      className="bg-white/5 rounded-xl border border-white/5 overflow-hidden w-full shrink-0"
                     >
-                      <div className="bg-white/5 px-3 py-1.5 flex justify-between items-center border-b border-white/5">
-                        <span className="text-[10px] font-black text-indigo-400 uppercase truncate max-w-[150px]">{log.title}</span>
-                        <span className="text-[9px] font-mono text-zinc-600">{new Date(log.timestamp).toLocaleTimeString('tr-TR')}</span>
+                      <div className="bg-white/5 px-3 py-1.5 flex justify-between items-center border-b border-white/5 gap-2">
+                        <span className="text-[10px] font-black text-indigo-400 uppercase truncate flex-1">{log.title}</span>
+                        <span className="text-[9px] font-mono text-zinc-600 shrink-0">{new Date(log.timestamp).toLocaleTimeString('tr-TR')}</span>
                       </div>
                       <div className="p-3 space-y-3">
                         {/* Kazananlar */}
@@ -304,9 +304,9 @@ export default function App() {
                           <div className="text-[8px] font-black text-pink-500 uppercase tracking-widest mb-1">KAZANANLAR</div>
                           <div className="space-y-1">
                             {log.winners.map((name, idx) => (
-                              <div key={idx} className="flex items-center gap-2 overflow-hidden">
+                               <div key={idx} className="flex items-center gap-2 overflow-hidden min-w-0">
                                 <span className="text-[10px] font-bold text-pink-500/50 shrink-0">#{idx+1}</span>
-                                <span className="text-xs font-bold uppercase truncate w-full">{name}</span>
+                                <span className="text-xs font-bold uppercase truncate flex-1 min-w-0">{name}</span>
                               </div>
                             ))}
                           </div>
@@ -317,9 +317,9 @@ export default function App() {
                             <div className="text-[8px] font-black text-indigo-400 uppercase tracking-widest mb-1">YEDEKLER</div>
                             <div className="space-y-1">
                               {log.substitutes.map((name, idx) => (
-                                <div key={idx} className="flex items-center gap-2 overflow-hidden">
+                                <div key={idx} className="flex items-center gap-2 overflow-hidden min-w-0">
                                   <span className="text-[10px] font-bold text-indigo-500/50 shrink-0">Y{idx+1}</span>
-                                  <span className="text-xs font-bold uppercase text-zinc-400 truncate w-full">{name}</span>
+                                  <span className="text-xs font-bold uppercase text-zinc-400 truncate flex-1 min-w-0">{name}</span>
                                 </div>
                               ))}
                             </div>
