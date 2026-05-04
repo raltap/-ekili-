@@ -134,7 +134,7 @@ export default function App() {
             <div className="bg-pink-500 p-2 rounded-xl shadow-lg shadow-pink-500/20">
               <Trophy className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-black tracking-tighter uppercase text-white">ÇEKİLİŞ PRO v2.0</h1>
+            <h1 className="text-2xl font-black tracking-tighter uppercase text-white">META SUMMİT ÇEKİLİŞİ</h1>
           </div>
           <div className="flex gap-4">
             <div className="bg-indigo-900/50 px-4 py-2 rounded-full border border-indigo-400/20 flex items-center gap-2">
@@ -270,71 +270,72 @@ export default function App() {
           </div>
 
           {/* Winner Log Sidebar */}
-          <div className="w-full lg:w-72 flex flex-col gap-4">
+          <div className="w-full lg:w-80 flex flex-col gap-4">
             <div className="bg-black/20 p-5 rounded-[2rem] border border-white/5 flex flex-col gap-4 h-full min-h-[500px]">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-black uppercase tracking-widest text-pink-400">KAZANANLAR</h3>
+                  <h3 className="text-sm font-black uppercase tracking-widest text-pink-400">ÇEKİLİŞ LOGU</h3>
                   <div className="h-px w-24 bg-gradient-to-r from-pink-500/50 to-transparent"></div>
                 </div>
                 <button 
                   onClick={clearHistory}
                   className="text-[9px] font-bold text-zinc-600 hover:text-red-400 transition-colors uppercase"
                 >
-                  LOG TEMİZLE
+                  LOGU TEMİZLE
                 </button>
               </div>
               
-              <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-2">
-                {currentResult.winners.map((name, i) => (
-                  <motion.div 
-                    initial={{ x: 20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    key={i} 
-                    className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5"
-                  >
-                    <span className="font-black text-pink-500">#{i+1}</span>
-                    <span className="text-sm font-bold uppercase truncate">{name}</span>
-                  </motion.div>
-                ))}
-                {currentResult.winners.length === 0 && (
-                   <div className="text-center py-4 text-zinc-600 text-[10px] font-bold uppercase italic border border-white/5 rounded-xl">
-                      Henüz Seçilmedi
-                   </div>
+              <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
+                <AnimatePresence initial={false}>
+                  {history.map((log) => (
+                    <motion.div 
+                      key={log.id}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-white/5 rounded-xl border border-white/5 overflow-hidden"
+                    >
+                      <div className="bg-white/5 px-3 py-1.5 flex justify-between items-center border-b border-white/5">
+                        <span className="text-[10px] font-black text-indigo-400 uppercase truncate max-w-[120px]">{log.title}</span>
+                        <span className="text-[9px] font-mono text-zinc-600">{new Date(log.timestamp).toLocaleTimeString('tr-TR')}</span>
+                      </div>
+                      <div className="p-3 space-y-3">
+                        {/* Kazananlar */}
+                        <div>
+                          <div className="text-[8px] font-black text-pink-500 uppercase tracking-widest mb-1">KAZANANLAR</div>
+                          <div className="space-y-1">
+                            {log.winners.map((name, idx) => (
+                              <div key={idx} className="flex items-center gap-2">
+                                <span className="text-[10px] font-bold text-pink-500/50">#{idx+1}</span>
+                                <span className="text-xs font-bold uppercase truncate">{name}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        {/* Yedekler */}
+                        {log.substitutes.length > 0 && (
+                          <div className="pt-2 border-t border-white/5">
+                            <div className="text-[8px] font-black text-indigo-400 uppercase tracking-widest mb-1">YEDEKLER</div>
+                            <div className="space-y-1">
+                              {log.substitutes.map((name, idx) => (
+                                <div key={idx} className="flex items-center gap-2">
+                                  <span className="text-[10px] font-bold text-indigo-500/50">Y{idx+1}</span>
+                                  <span className="text-xs font-bold uppercase text-zinc-400 truncate">{name}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                
+                {history.length === 0 && (
+                  <div className="text-center py-12 text-zinc-700 text-[10px] font-bold uppercase italic border border-white/5 rounded-xl">
+                    HENÜZ ÇEKİLİŞ YAPILMADI
+                  </div>
                 )}
               </div>
-
-              <div className="mt-4 flex flex-col gap-1">
-                <h3 className="text-sm font-black uppercase tracking-widest text-indigo-300">YEDEKLER</h3>
-                <div className="h-px w-24 bg-gradient-to-r from-indigo-500/50 to-transparent"></div>
-                <div className="mt-3 flex flex-col gap-2 h-48 overflow-y-auto pr-2 custom-scrollbar">
-                  {currentResult.substitutes.map((name, i) => (
-                    <div key={i} className="flex items-center gap-3 p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/10">
-                      <span className="text-[10px] font-black text-indigo-400">Y{i+1}</span>
-                      <span className="text-xs font-bold uppercase truncate">{name}</span>
-                    </div>
-                  ))}
-                  {currentResult.substitutes.length === 0 && (
-                    <div className="text-center py-3 text-zinc-700 text-[9px] font-bold uppercase italic border border-white/5 rounded-lg">
-                      YOK
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Recent History Preview */}
-              {history.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-white/5">
-                   <h4 className="text-[9px] font-black uppercase text-zinc-500 mb-2">SON ÇEKİLİŞLER</h4>
-                   <div className="space-y-1">
-                      {history.slice(0, 3).map(h => (
-                        <div key={h.id} className="text-[10px] text-zinc-400 truncate font-medium">
-                          &bull; {h.title}
-                        </div>
-                      ))}
-                   </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -346,7 +347,7 @@ export default function App() {
             <span className="w-1 h-1 bg-indigo-600 rounded-full"></span>
             <span>NO LIMITS ENABLED</span>
           </div>
-          <div className="text-[10px] font-bold uppercase">GITHUB / ÇEKİLİŞ-PRO</div>
+          <div className="text-[10px] font-bold uppercase">GITHUB / META-SUMMIT-RAFFLE</div>
         </footer>
       </div>
     </div>
