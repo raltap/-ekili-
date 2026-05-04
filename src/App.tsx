@@ -30,6 +30,7 @@ export default function App() {
   });
 
   const [isDrawing, setIsDrawing] = useState(false);
+  const [targetWinner, setTargetWinner] = useState<string | null>(null);
   const [currentDrawQueue, setCurrentDrawQueue] = useState<{type: 'winner' | 'substitute', index: number}[]>([]);
   const [currentResult, setCurrentResult] = useState<{ winners: string[], substitutes: string[] }>({ winners: [], substitutes: [] });
   const [history, setHistory] = useState<DrawResult[]>([]);
@@ -43,7 +44,7 @@ export default function App() {
   }, [participantsText]);
 
   const startDraw = () => {
-    if (participants.length === 0) return;
+    if (participants.length === 0 || isDrawing) return;
     if (participants.length < (settings.winnerCount + settings.substituteCount)) {
       alert('Katılımcı sayısı, ödül + yedek sayısından az olamaz!');
       return;
@@ -55,19 +56,30 @@ export default function App() {
 
     setCurrentDrawQueue(queue);
     setCurrentResult({ winners: [], substitutes: [] });
+    
+    // Pre-select first winner
+    const firstWinner = participants[Math.floor(Math.random() * participants.length)];
+    setTargetWinner(firstWinner);
     setIsDrawing(true);
   };
 
-  const handleDrawFinish = (winner: string) => {
+  const handleDrawFinish = () => {
+    if (!targetWinner) return;
     const currentItem = currentDrawQueue[0];
+    const winner = targetWinner;
     
+    let updatedWinners = currentResult.winners;
+    let updatedSubstitutes = currentResult.substitutes;
+
     if (currentItem.type === 'winner') {
-      setCurrentResult(prev => ({ ...prev, winners: [...prev.winners, winner] }));
+      updatedWinners = [...updatedWinners, winner];
+      setCurrentResult(prev => ({ ...prev, winners: updatedWinners }));
     } else {
-      setCurrentResult(prev => ({ ...prev, substitutes: [...prev.substitutes, winner] }));
+      updatedSubstitutes = [...updatedSubstitutes, winner];
+      setCurrentResult(prev => ({ ...prev, substitutes: updatedSubstitutes }));
     }
 
-    // Remove winner from the list for NEXT steps of this draw
+    // Remove winner from the list text area immediately to keep data consistent
     setParticipantsText(prev => {
       const lines = prev.split('\n').map(l => l.trim().toLocaleUpperCase('tr-TR'));
       const foundIndex = lines.indexOf(winner);
@@ -80,13 +92,13 @@ export default function App() {
     const remainingQueue = currentDrawQueue.slice(1);
     
     if (remainingQueue.length === 0) {
-      // Completed all draws in this session
       setIsDrawing(false);
+      setTargetWinner(null);
       setCurrentDrawQueue([]);
       
       if (settings.confettiEnabled) {
         confetti({
-          particleCount: 100,
+          particleCount: 80,
           spread: 70,
           origin: { y: 0.6 },
           colors: ['#ffffff', '#facc15', '#3b82f6']
@@ -95,30 +107,26 @@ export default function App() {
       if (settings.soundEnabled) playWin();
 
       // Log to history
-      const newResult: DrawResult = {
-        id: crypto.randomUUID(),
-        title: settings.title,
-        timestamp: Date.now(),
-        winners: [...currentResult.winners, currentItem.type === 'winner' ? winner : ''],
-        substitutes: [...currentResult.substitutes, currentItem.type === 'substitute' ? winner : ''],
-      };
-      
-      // Fix: the currentResult state might not be updated yet due to closure.
-      // Better to calculate final winners/substitutes from latest data.
       setHistory(prev => [{
         id: crypto.randomUUID(),
         title: settings.title,
         timestamp: Date.now(),
-        winners: currentItem.type === 'winner' ? [...currentResult.winners, winner] : currentResult.winners,
-        substitutes: currentItem.type === 'substitute' ? [...currentResult.substitutes, winner] : currentResult.substitutes,
+        winners: updatedWinners,
+        substitutes: updatedSubstitutes,
       }, ...prev]);
 
     } else {
-      // Continue to next item in queue
       setCurrentDrawQueue(remainingQueue);
-      // Brief pause between draws
       setIsDrawing(false);
-      setTimeout(() => setIsDrawing(true), 1500);
+      setTargetWinner(null);
+      
+      // Calculate next winner from remaining pool
+      setTimeout(() => {
+        const remainingNames = participants.filter(n => n !== winner);
+        const nextWinner = remainingNames[Math.floor(Math.random() * remainingNames.length)];
+        setTargetWinner(nextWinner);
+        setIsDrawing(true);
+      }, 1500);
     }
   };
 
@@ -254,6 +262,7 @@ export default function App() {
               <SlotMachine 
                 names={participants}
                 isDrawing={isDrawing}
+                targetWinner={targetWinner}
                 duration={settings.duration}
                 onFinished={handleDrawFinish}
                 soundEnabled={settings.soundEnabled}
